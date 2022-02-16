@@ -15,6 +15,16 @@ const App = () => {
 
   const [hasClaimedNFT, setHasClaimedNFT] = useState(false);
 
+  // The signer is required to sign transactions on the blockchain.
+  // Without it we can only read data, not write.
+  const signer = provider ? provider.getSigner(): undefined;
+
+  const [isClaiming, setIsClaiming] = useState(false);
+
+  useEffect(async () => {
+    sdk.setProviderOrSigner(signer);
+  },  [signer]);
+
   useEffect(async () => {
     // If they don't have an connected wallet, exit!
     if (!address) {
@@ -50,13 +60,32 @@ const App = () => {
       </div>
     )
   }
-  else {
-    return (
-      <div className="landing">
-        <h1>Welcome to My DAO</h1>
-      </div>
-    );
+
+  const mintNft = async () => {
+    setIsClaiming(true);
+    try {
+      await bundleDropModule.claim("0", 1);
+      setHasClaimedNFT(true);
+      console.log(`Successfully Minted! Check it out on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`);
+    } catch (e) {
+      console.log("Failed to claim ", error);
+    } finally {
+      setIsClaiming(false);
+    }
   }
+
+  return (
+    <div className="mint-nft">
+      <h1>Mint your free DAO membership NFT</h1>
+      <button
+        disabled={isClaiming}
+        onClick = {() => mintNft()}
+      >
+        {isClaiming ? "Minting...": "Mint your nft (FREE)"}
+      </button>
+    </div>
+  )
+  
 };
 
 export default App;
