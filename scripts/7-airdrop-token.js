@@ -26,7 +26,7 @@ const tokenModule = sdk.getTokenModule(
 
             const target = {
                 address: wallet,
-                amount = ethers.utils.parseUnits(randomAmount.toString(), 18),
+                amount: ethers.utils.parseUnits(randomAmount.toString(), 18),
             };
 
             return target;
