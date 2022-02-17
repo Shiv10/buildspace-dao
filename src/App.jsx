@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { UnsupportedChainIdError } from '@web3-react/core'
 import { ThirdwebSDK } from "@3rdweb/sdk";
 import { useWeb3 } from "@3rdweb/hooks";
 import { ethers } from 'ethers';
@@ -147,8 +148,20 @@ const App = () => {
     } catch (error) {
       setHasClaimedNFT(false);
       console.error("failed to nft balance", error);
+    }
+  }, [address]);
+
+  if (error instanceof UnsupportedChainIdError ) {
+    return (
+      <div className="unsupported-network">
+        <h2>Please connect to Rinkeby</h2>
+        <p>
+          This dapp only works on the Rinkeby network, please switch networks
+          in your connected wallet.
+        </p>
+      </div>
+    );
   }
-}, [address]);
 
 
   if(!address) {
@@ -165,10 +178,10 @@ const App = () => {
   if(hasClaimedNFT) {
     return (
       <div className="member-page">
-        <h1>Transfer DAO member</h1>
+        <h1 style={{color: "black"}}>Transfer DAO member</h1>
         <div>
           <div>
-            <h2>Member List</h2>
+            <h2 style={{color: "black"}}>Member List</h2>
             <table className="card">
               <thead>
                 <tr>
@@ -189,7 +202,7 @@ const App = () => {
             </table>
           </div>
           <div>
-            <h2>Active Proposals</h2>
+            <h2 style={{color: "black"}}>Active Proposals</h2>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -278,8 +291,8 @@ const App = () => {
               }}
             >
               {proposals.map((proposal, index) => (
-                <div key={proposal.proposalId} className="card">
-                  <h5>{proposal.description}</h5>
+                <div key={proposal.proposalId} className="card" >
+                  <h5 style={{color: "black"}}>{proposal.description}</h5>
                   <div>
                     {proposal.votes.map((vote) => (
                       <div key={vote.type}>
@@ -306,7 +319,7 @@ const App = () => {
                     ? "You Already Voted"
                     : "Submit Votes"}
               </button>
-              <small>
+              <small style={{color: "black"}}>
                 This will trigger multiple transactions that you will need to
                 sign.
               </small>
